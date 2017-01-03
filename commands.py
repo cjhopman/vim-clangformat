@@ -16,11 +16,14 @@ class ClangFormatEx(Command):
   def run(self, line1=0, line2=0):
     buf = vim.current.buffer
     text = '\n'.join(buf)
+    print line1, line2
 
-    p = subprocess.Popen([
-      '/usr/bin/clang-format',
-      '-lines', str(line1 + 1) + ':' + str(line2 + 1),
-      '-style', 'Chromium'],
+    cmd = [
+      'clang-format',
+      '-lines', str(line1) + ':' + str(line2),
+      '-style=' + os.getenv('CLANG_FORMAT_FILE', 'Chromium'),
+    ]
+    p = subprocess.Popen(cmd,
       stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate(input=text)
 
